@@ -4,7 +4,7 @@ from datetime import timedelta, datetime
 from shortner.models import URL
 from url_shortner.settings import DATETIME_FORMAT_STANDARD
 
-BASE_URL = "http://{}/{}"
+REDIRECT_URL = "http://{}/redirect/{}"
 
 
 def generate_hash():
@@ -31,7 +31,8 @@ def generate_short_url(original_url, expiration_ts, current_site):
     # if it does not already exist, create an entry, else try generating a new hash
     if not hash_exists:
         created = URL.objects.create(hash=hash, original_url=original_url, expiration_ts=expiration_ts)
-        short_url = BASE_URL.format(current_site, hash)
+        print("New hash stored against this url")
+        short_url = REDIRECT_URL.format(current_site, hash)
         return short_url
     else:
         generate_short_url(original_url, expiration_ts, current_site)
@@ -43,8 +44,13 @@ def check_hash_expiry(url):
     """
     current_ts = datetime.now().replace(tzinfo=None).strftime(DATETIME_FORMAT_STANDARD)
     expiration_ts = str(url.expiration_ts)
-    # print(timedelta(current_ts, expiration_ts).seconds)
-    if current_ts >= expiration_ts:
+
+    if url.expired:
+        return True
+
+    if current_ts <= expiration_ts:
+        url.expired = True
+        url.save()
         return False
     return True
 
@@ -56,13 +62,15 @@ def is_hash_valid(hash):
     # check if hash is present in DB
     url = URL.objects.filter(hash=hash)
     hash_exists = url.exists()
+    print(f"hash_exists: {hash_exists}")
     if not hash_exists:
-        return False
+        return False, None
     
     # check if hash has expired
     hash_expired = check_hash_expiry(url[0])
+    print(f"hash_expired: {hash_expired}")
     if hash_expired:
-        return False
+        return False, None
     
     original_url = url[0].original_url
     return True, original_url

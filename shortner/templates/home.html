@@ -1,0 +1,165 @@
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>URL shortner</title>
+    <!-- Bootstrap core CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-beta/css/bootstrap.min.css"
+        rel="stylesheet">
+    <!-- Material Design Bootstrap -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.4.1/css/mdb.min.css" rel="stylesheet">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome-animation/0.0.10/font-awesome-animation.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <style>
+        /* TEMPLATE STYLES */
+        main {
+            padding-top: 3rem;
+            padding-bottom: 2rem;
+        }
+
+        .extra-margins {
+            margin-top: 1rem;
+            margin-bottom: 2.5rem;
+        }
+    </style>
+</head>
+
+<body>
+    {% block content %}
+    <!--Main Navigation-->
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark primary-color-dark justify-content-center">
+            <a class="navbar-brand" href={% url 'home' %}><strong>URL shortner</strong></a>
+        </nav>
+
+    </header>
+    <!--Main Navigation-->
+
+    <main>
+        
+        <!--Main layout-->
+        <div class="container">
+            <!--First row-->
+            <div class="row">
+                <div class="col-md-7">
+                    <!--Featured image -->
+                    <div class="view overlay hm-white-light z-depth-1-half">
+                        <img src="https://mdbootstrap.com/images/proffesions/slides/socialmedia/img%20(2).jpg"
+                            class="img-fluid " alt="">
+                        <div class="mask">
+                        </div>
+                    </div>
+                    <br>
+                </div>
+
+                <!--Main information-->
+                <div class="col-md-5">
+                    <h2 class="h2-responsive wow fadeInDown">Free URL shortner service</h2>
+                    <hr>
+
+                    <ul class="wow fadeInUp">
+                        <!-- Form -->
+                        <form action="shorten_url" method="post">
+                            {% csrf_token %}
+                            <div class="md-form">
+                                <i class="fa fa-link prefix grey-text"></i>
+                                <input type="text" class="form-control" name="original_url" required>
+                                <label for="original-url">External link</label>
+                            </div>
+
+                            <div class="md-form">
+                                <i class="fa fa-calendar prefix grey-text"></i>
+                                <input type="datetime-local" class="form-control" name="expiration_ts" required>
+                            </div>
+
+                            <div class="text-center">
+                                <button class="btn btn-default" type="submit">Shorten URL</button>
+                            </div>
+                        </form>
+                        <!-- Form -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!--/.Main layout-->
+
+    </main>
+    <hr class="extra-margins">
+    <div class="container">
+
+        <!-- Example row of columns -->
+        <div class="row">
+            <div class="col-md-2">
+            </div>
+
+            <div class="col-md-8">
+                <!-- Form login -->
+                <form>
+                    <div class="md-form">
+                        <i class="fa fa-link prefix grey-text"></i>
+                        <input type="text" id="to-copy" class="form-control" name="short_url" value={{ data.short_url }}>
+                        <label for="ori ginal-url">shortened link</label>
+                    </div>
+                    <div class="text-center">
+                        <button class="btn btn-primary" type="button" id="copy">Copy</button>
+                        <label id="copied-text" style="visibility: hidden;">Copied!</label>
+                    </div>
+                </form>
+                <!-- Form login -->
+            </div>
+
+            <div class="col-md-2">
+
+            </div>
+
+        </div>
+    </div>
+    {% endblock %}
+
+    <!-- SCRIPTS -->
+    <!-- JQuery -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <!-- Bootstrap tooltips -->
+    <script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+    <!-- Bootstrap core JavaScript -->
+    <script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-beta/js/bootstrap.min.js"></script>
+    <!-- MDB core JavaScript -->
+    <script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.4.1/js/mdb.min.js"></script>
+
+    <script>
+        wow = new WOW().init();
+
+        var toCopy  = document.getElementById( 'to-copy' ),
+        btnCopy = document.getElementById( 'copy' ),
+        output = document.getElementById( 'copied-text' )
+
+        btnCopy.addEventListener( 'click', function(){
+        toCopy.select();
+        
+        if ( document.execCommand( 'copy' ) ) {
+            btnCopy.classList.add( 'copied' );
+            output.style.visibility = 'visible';
+            
+            var temp = setInterval( function(){
+                btnCopy.classList.remove( 'copied' );
+                output.style.visibility = 'hidden';
+                clearInterval(temp);
+            }, 600 );
+            
+        } else {
+            console.info( 'document.execCommand went wrong…' )
+        }
+        
+        return false;
+        } );
+    </script>
+</body>
+
+</html>

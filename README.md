@@ -1,4 +1,4 @@
-This is a simple URL shortner made using Python, Django and Redis.
+This is a simple URL shortner made using Python, Django.
 
 In order to run this on your machine -
 
