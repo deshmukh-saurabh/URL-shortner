@@ -1,4 +1,8 @@
-This is a simple URL shortner made using Python, Django.
+### This is a simple URL shortner made using Python, Django. The app is live on heroku at [here.](https://url-shortner-service-django.herokuapp.com/home)
+
+
+![](https://github.com/deshmukh-saurabh/URL-shortner/blob/master/screenshots/home.png)
+
 
 In order to run this on your machine -
 
